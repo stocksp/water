@@ -17,7 +17,7 @@ const Header = () => {
       }}
     >
       <Head>
-        <title>Match Club</title>
+        <title>Water Report</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
