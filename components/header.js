@@ -9,7 +9,6 @@ const navbar = {
 };
 
 const Header = () => {
-  
   return (
     <div
       style={{
@@ -29,7 +28,6 @@ const Header = () => {
         <span className="tinyIcon">💦</span>
       </h1>
 
-      
       <Navbar expand="sm" collapseOnSelect variant="dark" style={navbar}>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
@@ -37,20 +35,9 @@ const Header = () => {
             <Link href="/" passHref>
               <Nav.Link eventKey="0">HOME</Nav.Link>
             </Link>
-            <Link href="/teamStats" passHref>
-              <Nav.Link eventKey="teamStats">TEAM STATS</Nav.Link>
-            </Link>
-            <Link href="/matchStats" passHref>
-              <Nav.Link eventKey="matchStats">MATCH STATS</Nav.Link>
-            </Link>
-            <Link href="/memberStats" passHref>
-              <Nav.Link eventKey="memberStats">MEMBER STATS</Nav.Link>
-            </Link>
-            
           </Nav>
         </Navbar.Collapse>
       </Navbar>
-      
     </div>
   );
 };

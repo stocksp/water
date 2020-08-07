@@ -1,19 +1,26 @@
 import { withMongo } from "libs/mongo";
 
-
 const handler = async (req, res) => {
   try {
-    console.log("starting getData");
-    const docs = await req.db
+    console.log("starting getData!");
+    const distDocs = await req.db
       .collection("waterDistance")
-      .find({when: {$gt:new Date(Date.now() - 24*60*60 * 1000)}})
+      .find({ when: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) } })
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
-    console.log("found", docs.length);
-    res.json({ message: "ok", docs });
+    const powerDocs = await req.db
+      .collection("power")
+      .find({
+        pump: "well",
+        when: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      })
+      .project({ _id: 0 })
+      .sort({ _id: -1 })
+      .toArray();
+    console.log("found", distDocs.length, powerDocs.length);
+    res.json({ message: "ok", distDocs, powerDocs });
   } catch (error) {
-
     res.json("Error: " + error.toString());
   }
 
