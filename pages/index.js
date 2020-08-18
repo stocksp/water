@@ -26,7 +26,7 @@ export default function Home() {
     });
     // combine on off ignore on if there is an off
     power = power.reduce((acc, cur, index, array) => {
-      if (index === 0 && array.length % 2 !== 0) {
+      if (index === 0 && cur.state === "on") {
         cur.state = "well running";
         acc.push(cur);
         return acc;
