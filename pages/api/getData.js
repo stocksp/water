@@ -12,7 +12,6 @@ const handler = async (req, res) => {
     const powerDocs = await req.db
       .collection("power")
       .find({
-        pump: "well",
         when: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
       })
       .project({ _id: 0 })

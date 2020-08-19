@@ -27,11 +27,11 @@ export default function Home() {
     // combine on off ignore on if there is an off
     power = power.reduce((acc, cur, index, array) => {
       if (index === 0 && cur.state === "on") {
-        cur.state = "well running";
+        cur.state = cur.pump === "well" ? "Well running" : "Pressure running";
         acc.push(cur);
         return acc;
       } else if (cur.state === "off") {
-        cur.state = "well ran";
+        cur.state = cur.pump === "well" ? "Well ran" : "Pressure ran";
         acc.push(cur);
       }
       return acc;
