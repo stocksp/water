@@ -31,12 +31,15 @@ export default function Home() {
         acc.push(cur);
         return acc;
       } else if (cur.state === "off" && cur.pump === "well") {
-        cur.state =  "Well ran" ;
+        cur.state = "Well ran";
         acc.push(cur);
       } else if (cur.state === "on" && cur.pump === "well") {
-        cur.state =  "Well starting" ;
+        cur.state = "Well starting";
         acc.push(cur);
-      } 
+      } else if (cur.state === "off" && cur.pump === "pressure") {
+        cur.state = "Pressure ran";
+        acc.push(cur);
+      }
       return acc;
     }, []);
     const dist = data.distDocs.map((d) => {
@@ -81,7 +84,9 @@ export default function Home() {
                         ? r.distance
                         : r.runTime
                         ? makeTime(r.runTime)
-                        : (r.state === "Well running") ? r.state : "---"}
+                        : r.state === "Well running"
+                        ? r.state
+                        : "---"}
                     </td>
                   </tr>
                 );
