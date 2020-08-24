@@ -26,19 +26,33 @@ export default function Home() {
       return d;
     });
     // combine on off ignore on if there is an off
+    let foundFirstPressure = false;
+    let foundFirstWell = false;
     power = power.reduce((acc, cur, index, array) => {
-      if (index === 0 && cur.state === "on") {
-        cur.state = cur.pump === "well" ? "Well running" : "Pressure running";
+      if (
+        !foundFirstPressure &&
+        cur.state === "on" &&
+        cur.pump === "pressure"
+      ) {
+        cur.state = "Pressure running";
+        foundFirstPressure = true;
+        acc.push(cur);
+        return acc;
+      } else if (!foundFirstWell && cur.state === "on" && cur.pump === "well") {
+        cur.state = "Well running";
+        foundFirstWell = true;
         acc.push(cur);
         return acc;
       } else if (cur.state === "off" && cur.pump === "well") {
         cur.state = "Well ran";
+        foundFirstWell = true;
         acc.push(cur);
       } else if (cur.state === "on" && cur.pump === "well") {
         cur.state = "Well starting";
         acc.push(cur);
       } else if (cur.state === "off" && cur.pump === "pressure") {
         cur.state = "Pressure ran";
+        foundFirstPressure = true;
         acc.push(cur);
       }
       return acc;
@@ -62,8 +76,13 @@ export default function Home() {
     return theData.find((v) => v.distance).distance;
   }
   function isWellrunning() {
-    const resp = theData.find(v => v.state === "Well running");
-    if(resp) return "  well pump is running..."
+    const resp = theData.find((v) => v.state === "Well running");
+    if (resp) {
+      return ` -- well pump is running... started ${format(
+        resp.when,
+        "h:mm:ss a"
+      )}`;
+    }
     return "";
   }
   return (
@@ -76,7 +95,8 @@ export default function Home() {
       {data ? (
         <Container>
           <h3>
-            Current well height <strong>{currentDistance()}</strong> {isWellrunning()}
+            Current well height <strong>{currentDistance()}</strong>{" "}
+            {isWellrunning()}
           </h3>
           <Table striped bordered hover size="sm">
             <thead>
