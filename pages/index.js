@@ -2,7 +2,7 @@ import Head from "next/head";
 import Header from "components/header";
 import useSWR, { SWRConfig } from "swr";
 import fetch from "unfetch";
-import { Table, Container } from "react-bootstrap";
+import { Table, Container, Row, Col } from "react-bootstrap";
 import { format, parseJSON, compareDesc } from "date-fns";
 import lsq from "libs/leastSquares";
 
@@ -78,10 +78,18 @@ export default function Home() {
   function isWellrunning() {
     const resp = theData.find((v) => v.state === "Well running");
     if (resp) {
-      return ` -- well pump is running... started ${format(
-        resp.when,
-        "h:mm:ss a"
-      )}`;
+      return (
+        <h4>Well pump is on... started {format(resp.when, "h:mm:ss a")}</h4>
+      );
+    }
+    return "";
+  }
+  function isPressurerunning() {
+    const resp = theData.find((v) => v.state === "Pressure running");
+    if (resp) {
+      return (
+        <h4>Pressure pump is on... started {format(resp.when, "h:mm:ss a")}</h4>
+      );
     }
     return "";
   }
@@ -94,10 +102,20 @@ export default function Home() {
       <Header />
       {data ? (
         <Container>
-          <h3>
-            Current well height <strong>{currentDistance()}</strong>{" "}
-            {isWellrunning()}
-          </h3>
+          <Row>
+            <Col md={{ span: 6, offset: 4 }}>
+              <h3>
+                Current well height <strong>{currentDistance()}</strong>{" "}
+              </h3>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={{ span: 6, offset: 4 }}>{isWellrunning()}</Col>
+          </Row>
+          <Row>
+            <Col md={{ span: 6, offset: 4 }}>{isPressurerunning()}</Col>
+          </Row>
+
           <Table striped bordered hover size="sm">
             <thead>
               <tr>
