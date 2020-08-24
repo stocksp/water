@@ -4,6 +4,7 @@ import useSWR, { SWRConfig } from "swr";
 import fetch from "unfetch";
 import { Table, Container } from "react-bootstrap";
 import { format, parseJSON, compareDesc } from "date-fns";
+import lsq from "libs/leastSquares";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 
@@ -42,8 +43,15 @@ export default function Home() {
       }
       return acc;
     }, []);
-    const dist = data.distDocs.map((d) => {
+    const dist = data.distDocs.map((d, i, arr) => {
       d.when = parseJSON(d.when);
+      // if (i < 11) {
+      //   const y = arr.slice(i, i + 6).map( v => v.distance);
+      //   const x = [0, 1, 2, 3];
+      //   let ret = {}
+      //   const f = lsq(x,y, ret)
+      //   console.log(ret);
+      // }
       return d;
     });
     theData = power.concat(dist).sort((a, b) => compareDesc(a.when, b.when));
@@ -52,6 +60,11 @@ export default function Home() {
   }
   function currentDistance() {
     return theData.find((v) => v.distance).distance;
+  }
+  function isWellrunning() {
+    const resp = theData.find(v => v.state === "Well running");
+    if(resp) return "  well pump is running..."
+    return "";
   }
   return (
     <div>
@@ -63,7 +76,7 @@ export default function Home() {
       {data ? (
         <Container>
           <h3>
-            Current well height <strong>{currentDistance()}</strong>
+            Current well height <strong>{currentDistance()}</strong> {isWellrunning()}
           </h3>
           <Table striped bordered hover size="sm">
             <thead>
