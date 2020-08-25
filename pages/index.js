@@ -103,7 +103,7 @@ export default function Home() {
       const max = Math.max(...dists);
       const min = Math.min(...dists);
       const dir = dists[0] > dists[dists.length - 1] ? "used" : "gained";
-      console.log("max", max, "min", min);
+      //console.log("max", max, "min", min);
       return (
         <h5>
           Water {dir} last {minutes} minutes {((max - min) * 70).toFixed(1)} gallons{" "}
@@ -123,23 +123,23 @@ export default function Home() {
       {data ? (
         <Container>
           <Row>
-            <Col md={{ span: 6, offset: 4 }}>
+            <Col md={{ span: 10, offset: 2 }}>
               <h3>
                 Current well distance <strong>{currentDistance()}</strong>{" "}
               </h3>
             </Col>
           </Row>
           <Row>
-            <Col md={{ span: 6, offset: 4 }}>{isWellrunning()}</Col>
+            <Col md={{ span: 10, offset: 2 }}>{isWellrunning()}</Col>
           </Row>
           <Row>
-            <Col md={{ span: 6, offset: 4 }}>{isPressurerunning()}</Col>
+            <Col md={{ span: 10, offset: 2 }}>{isPressurerunning()}</Col>
           </Row>
           <Row>
-            <Col md={{ span: 6, offset: 4 }}>{waterUsedLast(60)}</Col>
+            <Col md={{ span: 10, offset: 2 }}>{waterUsedLast(60)}</Col>
           </Row>
           <Row>
-            <Col md={{ span: 6, offset: 4 }}>{waterUsedLast(30)}</Col>
+            <Col md={{ span: 10, offset: 2 }}>{waterUsedLast(30)}</Col>
           </Row>
 
           <Table striped bordered hover size="sm">
