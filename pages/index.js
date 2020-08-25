@@ -105,7 +105,7 @@ export default function Home() {
           <Row>
             <Col md={{ span: 6, offset: 4 }}>
               <h3>
-                Current well height <strong>{currentDistance()}</strong>{" "}
+                Current well distance <strong>{currentDistance()}</strong>{" "}
               </h3>
             </Col>
           </Row>
