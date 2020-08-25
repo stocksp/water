@@ -3,7 +3,7 @@ import Header from "components/header";
 import useSWR, { SWRConfig } from "swr";
 import fetch from "unfetch";
 import { Table, Container, Row, Col } from "react-bootstrap";
-import { format, parseJSON, compareDesc } from "date-fns";
+import { format, parseJSON, compareDesc, differenceInMinutes } from "date-fns";
 import lsq from "libs/leastSquares";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
@@ -93,6 +93,26 @@ export default function Home() {
     }
     return "";
   }
+  function waterUsedLast(minutes) {
+    const dists = theData
+      .filter(
+        (v) => v.distance && differenceInMinutes(new Date(), v.when) <= minutes
+      )
+      .map((v) => v.distance);
+    if (dists) {
+      const max = Math.max(...dists);
+      const min = Math.min(...dists);
+      const dir = dists[0] > dists[dists.length - 1] ? "used" : "gained";
+      console.log("max", max, "min", min);
+      return (
+        <h5>
+          Water {dir} last {minutes} minutes {((max - min) * 70).toFixed(1)} gallons{" "}
+          {(max - min).toFixed(1)} - inches
+        </h5>
+      );
+    }
+    return "";
+  }
   return (
     <div>
       <Head>
@@ -114,6 +134,12 @@ export default function Home() {
           </Row>
           <Row>
             <Col md={{ span: 6, offset: 4 }}>{isPressurerunning()}</Col>
+          </Row>
+          <Row>
+            <Col md={{ span: 6, offset: 4 }}>{waterUsedLast(60)}</Col>
+          </Row>
+          <Row>
+            <Col md={{ span: 6, offset: 4 }}>{waterUsedLast(30)}</Col>
           </Row>
 
           <Table striped bordered hover size="sm">
