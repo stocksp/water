@@ -4,3 +4,6 @@
 .mediumIcon {
   font-size: 30px;
 }
+.form-inline label {
+  padding-right: 1rem;
+}

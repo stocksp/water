@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Head from "next/head";
-import { Navbar, Nav } from "react-bootstrap";
+
 
 const active = "0";
 
@@ -27,17 +27,6 @@ const Header = () => {
         <span className="mediumIcon">💦</span>
         <span className="tinyIcon">💦</span>
       </h1>
-
-      <Navbar expand="sm" collapseOnSelect variant="dark" style={navbar}>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
-          <Nav activeKey={active}>
-            <Link href="/" passHref>
-              <Nav.Link eventKey="0">HOME</Nav.Link>
-            </Link>
-          </Nav>
-        </Navbar.Collapse>
-      </Navbar>
     </div>
   );
 };
