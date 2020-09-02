@@ -17,6 +17,7 @@
     "react-icons": "^3.10.0",
     "reactstrap": "^8.5.1",
     "swr": "^0.3.0",
-    "unfetch": "^4.1.0"
+    "unfetch": "^4.1.0",
+    "victory": "^35.0.8"
   }
 }

@@ -1,7 +1,7 @@
 import Head from "next/head";
 import Header from "components/header";
-import useSWR, { SWRConfig } from "swr";
-import fetch from "unfetch";
+import useSWR from "swr";
+import fetcher from "libs/fetcher";
 import {
   Table,
   Container,
@@ -14,9 +14,10 @@ import {
   Label,
   CustomInput,
 } from "reactstrap";
-import { format, parseJSON, compareDesc, differenceInMinutes } from "date-fns";
-import lsq from "libs/leastSquares";
+import { format, differenceInMinutes } from "date-fns";
+
 import { useState } from "react";
+import Link from "next/link";
 
 function doFormat(theDate) {
   return format(theDate, "MMM d, h:mm:ss a");
@@ -143,6 +144,9 @@ export default function Home() {
                 />
               </div>
             </FormGroup>
+            <Link href="/charts">
+              <a>Chart</a>
+            </Link>
           </Form>
 
           <Row>
@@ -200,63 +204,3 @@ export default function Home() {
     </div>
   );
 }
-const fetcher = (url) =>
-  fetch(url).then((r) =>
-    r.json().then((d) => {
-      let power = d.powerDocs.map((d) => {
-        d.when = parseJSON(d.when);
-        return d;
-      });
-      // combine on off ignore on if there is an off
-      let foundFirstPressure = false;
-      let foundFirstWell = false;
-      power = power.reduce((acc, cur, index, array) => {
-        if (cur.pump === "pressure" && index < 9) {
-          console.log(cur.state);
-        }
-        if (
-          !foundFirstPressure &&
-          cur.state === "on" &&
-          cur.pump === "pressure"
-        ) {
-          cur.state = "Pressure running";
-          foundFirstPressure = true;
-          acc.push(cur);
-          return acc;
-        } else if (
-          !foundFirstWell &&
-          cur.state === "on" &&
-          cur.pump === "well"
-        ) {
-          cur.state = "Well running";
-          foundFirstWell = true;
-          acc.push(cur);
-          return acc;
-        } else if (cur.state === "off" && cur.pump === "well") {
-          cur.state = "Well ran";
-          foundFirstWell = true;
-          acc.push(cur);
-        } else if (cur.state === "on" && cur.pump === "well") {
-          cur.state = "Well starting";
-          acc.push(cur);
-        } else if (cur.state === "off" && cur.pump === "pressure") {
-          cur.state = "Pressure ran";
-          foundFirstPressure = true;
-          acc.push(cur);
-        }
-        return acc;
-      }, []);
-      const dist = d.distDocs.map((d, i, arr) => {
-        d.when = parseJSON(d.when);
-        // if (i < 11) {
-        //   const y = arr.slice(i, i + 6).map( v => v.distance);
-        //   const x = [0, 1, 2, 3];
-        //   let ret = {}
-        //   const f = lsq(x,y, ret)
-        //   console.log(ret);
-        // }
-        return d;
-      });
-      return power.concat(dist).sort((a, b) => compareDesc(a.when, b.when));
-    })
-  );
