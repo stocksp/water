@@ -65,6 +65,7 @@ export default function Home() {
     if (dists) {
       const max = Math.max(...dists);
       const min = Math.min(...dists);
+      if (minutes === 120 && Math.abs(max - min) <= 0.1) return "";
       const dir = dists[0] > dists[dists.length - 1] ? "used" : "gained";
       //console.log("max", max, "min", min);
       return (
@@ -161,6 +162,9 @@ export default function Home() {
           </Row>
           <Row>
             <Col md={{ span: 10, offset: 2 }}>{isPressurerunning()}</Col>
+          </Row>
+          <Row>
+            <Col md={{ span: 10, offset: 2 }}>{waterUsedLast(120)}</Col>
           </Row>
           <Row>
             <Col md={{ span: 10, offset: 2 }}>{waterUsedLast(60)}</Col>
