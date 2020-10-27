@@ -108,7 +108,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      {data ? (
+      {data && data.length > 0 ? (
         <Container>
           <Form inline>
             <FormGroup check inline>
