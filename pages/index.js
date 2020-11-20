@@ -100,6 +100,8 @@ export default function Home() {
   if (dataToUse === "well") useThis = data.filter((d) => d.pump === "well");
   if (dataToUse === "pressure")
     useThis = data.filter((d) => d.pump === "pressure");
+  if (dataToUse === "voltage")
+    useThis = data.filter((d) => (d.voltage ? true : false));
 
   return (
     <div>
@@ -142,6 +144,15 @@ export default function Home() {
                   inline
                   onChange={onRadio}
                   checked={dataToUse === "pressure"}
+                />
+                <CustomInput
+                  type="radio"
+                  id="voltage"
+                  name="voltage"
+                  label="Voltage"
+                  inline
+                  onChange={onRadio}
+                  checked={dataToUse === "voltage"}
                 />
               </div>
             </FormGroup>
@@ -198,7 +209,7 @@ export default function Home() {
                   : r.state === "Well running"
                   ? r.state
                   : "---";
-                 return (
+                return (
                   <tr key={i} style={getBGColor(r)}>
                     <td key={1}>{what}</td>
                     <td key={2}>{doFormat(r.when)}</td>
