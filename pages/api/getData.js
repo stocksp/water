@@ -17,8 +17,16 @@ const handler = async (req, res) => {
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
-    console.log("found", distDocs.length, powerDocs.length);
-    res.json({ message: "ok", distDocs, powerDocs });
+      const voltageDocs = await req.db
+      .collection("voltage")
+      .find({
+        when: { $gt: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+      })
+      .project({ _id: 0 })
+      .sort({ _id: -1 })
+      .toArray();
+    console.log("found", distDocs.length, powerDocs.length, voltageDocs.length);
+    res.json({ message: "ok", distDocs, powerDocs, voltageDocs });
   } catch (error) {
     res.json("Error: " + error.toString());
   }

@@ -7,6 +7,10 @@ const fetcher = (url) =>
         d.when = parseJSON(d.when);
         return d;
       });
+      let voltage = d.voltageDocs.map((d) => {
+        d.when = parseJSON(d.when);
+        return d;
+      });
       // combine on off ignore on if there is an off
       let foundFirstPressure = false;
       let foundFirstWell = false;
@@ -57,7 +61,7 @@ const fetcher = (url) =>
         // }
         return d;
       });
-      return power.concat(dist).sort((a, b) => compareDesc(a.when, b.when));
+      return power.concat(dist).concat(voltage).sort((a, b) => compareDesc(a.when, b.when));
     })
   );
 

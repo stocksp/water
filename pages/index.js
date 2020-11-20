@@ -178,24 +178,31 @@ export default function Home() {
               <tr>
                 <th>What</th>
                 <th>When</th>
-                <th>Dist</th>
+                <th>Dist/Volts</th>
               </tr>
             </thead>
             <tbody>
               {useThis.map((r, i) => {
-                return (
+                const what = r.distance
+                  ? "Distance"
+                  : r.state
+                  ? r.state
+                  : "Voltage";
+                //Dist column
+                const dist = r.distance
+                  ? r.distance
+                  : r.voltage
+                  ? r.voltage
+                  : r.runTime
+                  ? makeTime(r.runTime)
+                  : r.state === "Well running"
+                  ? r.state
+                  : "---";
+                 return (
                   <tr key={i} style={getBGColor(r)}>
-                    <td key={1}>{r.distance ? "Distance" : r.state}</td>
+                    <td key={1}>{what}</td>
                     <td key={2}>{doFormat(r.when)}</td>
-                    <td key={3}>
-                      {r.distance
-                        ? r.distance
-                        : r.runTime
-                        ? makeTime(r.runTime)
-                        : r.state === "Well running"
-                        ? r.state
-                        : "---"}
-                    </td>
+                    <td key={3}>{dist}</td>
                   </tr>
                 );
               })}
