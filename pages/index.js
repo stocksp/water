@@ -96,7 +96,8 @@ export default function Home() {
   };
 
   let useThis;
-  if (dataToUse === "all") useThis = data;
+  if (dataToUse === "all")
+    useThis = data ? data.filter((d) => (d.voltage ? false : true)) : data;
   if (dataToUse === "well") useThis = data.filter((d) => d.pump === "well");
   if (dataToUse === "pressure")
     useThis = data.filter((d) => d.pump === "pressure");
