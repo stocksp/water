@@ -63,15 +63,17 @@ export default function Home() {
       )
       .map((v) => v.distance);
     if (dists) {
-      const max = Math.max(...dists);
-      const min = Math.min(...dists);
+      let max = Math.max(...dists);
+      let min = Math.min(...dists);
+      max = max === Infinity || max === -Infinity ? 0 : max;
+      min = min === Infinity || min === -Infinity ? 0 : min;
       if (minutes === 120 && Math.abs(max - min) <= 0.1) return "";
       const dir = dists[0] > dists[dists.length - 1] ? "used" : "gained";
       //console.log("max", max, "min", min);
       return (
         <h5>
-          Water {dir} last {minutes} minutes {((max - min) * 70).toFixed(1)}{" "}
-          gallons {(max - min).toFixed(1)} - inches
+          Water {dir} last {minutes} mins {((max - min) * 70).toFixed(1)}{" "}
+          gals {(max - min).toFixed(1)} - inches
         </h5>
       );
     }
