@@ -3,9 +3,10 @@ import { withMongo } from "libs/mongo";
 const handler = async (req, res) => {
   try {
     console.log("starting getData!");
+    // look back 5 days = 5 * 24 * 60 * 60 * 1000
     const distDocs = await req.db
       .collection("waterDistance")
-      .find({ when: { $gt: new Date(Date.now() - 72 * 60 * 60 * 1000) } })
+      .find({ when: { $gt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) } })
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
