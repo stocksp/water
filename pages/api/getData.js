@@ -13,12 +13,12 @@ const handler = async (req, res) => {
     const powerDocs = await req.db
       .collection("power")
       .find({
-        when: { $gt: new Date(Date.now() - 72 * 60 * 60 * 1000) },
+        when: { $gt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
       })
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
-      const voltageDocs = await req.db
+    const voltageDocs = await req.db
       .collection("voltage")
       .find({
         when: { $gt: new Date(Date.now() - 72 * 60 * 60 * 1000) },
