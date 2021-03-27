@@ -18,6 +18,7 @@ import { format, differenceInMinutes } from "date-fns";
 
 import { useState } from "react";
 import Link from "next/link";
+import isWithinInterval from "date-fns/isWithinInterval/index";
 
 function doFormat(theDate) {
   return format(theDate, "MMM d, h:mm:ss a");
@@ -202,6 +203,8 @@ export default function Home() {
                   : r.state
                   ? r.state
                   : "Voltage";
+                //console.log("what=", what)
+                //console.log("r.distance",r.distance)
                 //Dist column
                 const dist = r.distance
                   ? r.distance
@@ -211,7 +214,8 @@ export default function Home() {
                   ? makeTime(r.runTime)
                   : r.state === "Well running"
                   ? r.state
-                  : "---";
+                  : "0 volts!";
+                //console.log("dist=", dist)
                 return (
                   <tr key={i} style={getBGColor(r)}>
                     <td key={1}>{what}</td>
