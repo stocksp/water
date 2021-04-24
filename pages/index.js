@@ -73,8 +73,8 @@ export default function Home() {
       //console.log("max", max, "min", min);
       return (
         <h5>
-          Water {dir} last {minutes} mins {((max - min) * 70).toFixed(1)}{" "}
-          gals {(max - min).toFixed(1)} - inches
+          Water {dir} last {minutes} mins {((max - min) * 70).toFixed(1)} gals{" "}
+          {(max - min).toFixed(1)} - inches
         </h5>
       );
     }
@@ -99,13 +99,22 @@ export default function Home() {
   };
 
   let useThis;
-  if (dataToUse === "all")
+  let tableHeader3 = "Dist/ Time";
+  if (dataToUse === "all") {
     useThis = data ? data.filter((d) => (d.voltage ? false : true)) : data;
-  if (dataToUse === "well") useThis = data.filter((d) => d.pump === "well");
-  if (dataToUse === "pressure")
+  }
+  if (dataToUse === "well") {
+    useThis = data.filter((d) => d.pump === "well");
+    tableHeader3 = "Time";
+  }
+  if (dataToUse === "pressure") {
     useThis = data.filter((d) => d.pump === "pressure");
-  if (dataToUse === "voltage")
+    tableHeader3 = "Time";
+  }
+  if (dataToUse === "voltage") {
     useThis = data.filter((d) => (d.voltage ? true : false));
+    tableHeader3 = "Voltage";
+  }
 
   return (
     <div>
@@ -193,7 +202,7 @@ export default function Home() {
               <tr>
                 <th>What</th>
                 <th>When</th>
-                <th>Dist/Volts</th>
+                <th>{tableHeader3}</th>
               </tr>
             </thead>
             <tbody>
@@ -214,7 +223,7 @@ export default function Home() {
                   ? makeTime(r.runTime)
                   : r.state === "Well running"
                   ? r.state
-                  : "0 volts!";
+                  : "-----";
                 //console.log("dist=", dist)
                 return (
                   <tr key={i} style={getBGColor(r)}>
