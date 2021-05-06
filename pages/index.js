@@ -14,7 +14,7 @@ import {
   Label,
   CustomInput,
 } from "reactstrap";
-import { format, differenceInMinutes } from "date-fns";
+import { format, differenceInMinutes, differenceInHours } from "date-fns";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -26,9 +26,11 @@ function doFormat(theDate) {
 function makeTime(seconds) {
   return (seconds / 60).toFixed(1) + " mins";
 }
-let theData = null;
+
 export default function Home() {
   const [dataToUse, setDataToUse] = useState("all");
+  // for well report
+  let groups = [];
 
   const { data } = useSWR("/api/getData", fetcher, { refreshInterval: 10000 });
   if (data) {
@@ -115,7 +117,91 @@ export default function Home() {
     useThis = data.filter((d) => (d.voltage ? true : false));
     tableHeader3 = "Voltage";
   }
+  // table data rows
+  let rows = [];
+  let wellRunTimeData = [];
+  if (data && data.length > 0)
+    useThis.map((r, i) => {
+      const what = r.distance ? "Distance" : r.state ? r.state : "Voltage";
+      //console.log("what=", what)
+      //console.log("r.distance",r.distance)
+      //Dist column
+      const dist = r.distance
+        ? r.distance
+        : r.voltage
+        ? r.voltage
+        : r.runTime
+        ? makeTime(r.runTime)
+        : r.state === "Well running"
+        ? r.state
+        : "-----";
+      //console.log("dist=", dist)
+      rows.push(
+        <tr key={i} style={getBGColor(r)}>
+          <td key={1}>{what}</td>
+          <td key={2}>{doFormat(r.when)}</td>
+          <td key={3}>{dist}</td>
+        </tr>
+      );
+      if (dataToUse === "well") {
+        wellRunTimeData.push({ what, when: r.when, dist });
+      }
+    });
+  // produce well report
+  if (wellRunTimeData.length) {
+    let group = [];
+    wellRunTimeData.reverse().forEach((v, i, arr) => {
+      if (!group.length) {
+        if (v.what === "Well starting") group.push(v);
+      } else {
+        if (v.what === "Well starting") {
+          const previous = group[group.length - 1];
+          const diff = differenceInMinutes(v.when, previous.when);
+          if (diff < 30 + parseFloat(previous.dist)) {
+            group.push(v);
+          } else {
+            groups.push(group);
+            group = [];
+            group.push(v);
+          }
+        }
 
+        if (v.what === "Well ran") {
+          group.push(v);
+        }
+      }
+    });
+    // add last one
+    groups.push(group);
+    groups.reverse();
+    console.log("groups before", groups);
+    groups = groups.map((v, i, arr) => {
+      let time = v
+        .filter((o) => o.what === "Well ran")
+        .reduce((a, b) => {
+          return a + parseFloat(b.dist);
+        }, 0);
+      time = Math.round(time * 10) / 10;
+      console.log("time", time);
+      // frags = "49.0,9.8,7.4,1.2"
+      const frags = v
+        .filter((o) => o.what === "Well ran")
+        .reduce((a, b) => {
+          return a + b.dist.split(" ")[0] + "+";
+        }, "")
+        .slice(0, -1);
+      console.log("frags", frags);
+      const sinceLastPump =
+        i < arr.length - 1
+          ? differenceInHours(
+              v[v.length - 1].when,
+              arr[i + 1][arr[i + 1].length - 1].when
+            )
+          : 0;
+      return { time, frags, sinceLastPump, when: v[0].when };
+    });
+    console.log("groups", groups);
+  }
   return (
     <div>
       <Head>
@@ -196,6 +282,33 @@ export default function Home() {
           <Row>
             <Col md={{ span: 10, offset: 2 }}>{waterUsedLast(30)}</Col>
           </Row>
+          {groups.length > 0 ? (
+            <>
+              <h3 className="text-center">Pumping Stats</h3>
+              <Table striped bordered hover size="sm">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Fragments</th>
+                    <th>Hours since last pump</th>
+                    <th>When</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {groups.map((r, i) => {
+                    return (
+                      <tr key={i} style={getBGColor(r)}>
+                        <td key={1}>{r.time}</td>
+                        <td key={2}>{r.frags}</td>
+                        <td key={3}>{r.sinceLastPump}</td>
+                        <td key={4}>{doFormat(r.when)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </Table>
+            </>
+          ) : null}
 
           <Table striped bordered hover size="sm">
             <thead>
@@ -205,35 +318,7 @@ export default function Home() {
                 <th>{tableHeader3}</th>
               </tr>
             </thead>
-            <tbody>
-              {useThis.map((r, i) => {
-                const what = r.distance
-                  ? "Distance"
-                  : r.state
-                  ? r.state
-                  : "Voltage";
-                //console.log("what=", what)
-                //console.log("r.distance",r.distance)
-                //Dist column
-                const dist = r.distance
-                  ? r.distance
-                  : r.voltage
-                  ? r.voltage
-                  : r.runTime
-                  ? makeTime(r.runTime)
-                  : r.state === "Well running"
-                  ? r.state
-                  : "-----";
-                //console.log("dist=", dist)
-                return (
-                  <tr key={i} style={getBGColor(r)}>
-                    <td key={1}>{what}</td>
-                    <td key={2}>{doFormat(r.when)}</td>
-                    <td key={3}>{dist}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
+            <tbody>{rows}</tbody>
           </Table>
         </Container>
       ) : (
