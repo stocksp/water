@@ -194,7 +194,7 @@ export default function Home() {
       const sinceLastPump =
         i < arr.length - 1
           ? differenceInHours(
-              v[v.length - 1].when,
+              v[0].when,
               arr[i + 1][arr[i + 1].length - 1].when
             )
           : 0;
