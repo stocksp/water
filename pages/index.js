@@ -45,7 +45,9 @@ export default function Home() {
     const resp = data.find((v) => v.state === "Well running");
     if (resp) {
       return (
-        <h4>Well pump is on... started {format(resp.when, "h:mm:ss a")}</h4>
+        <h4 style={{ backgroundColor: "rgba(255, 99, 71, 0.5)" }}>
+          Well pump is on... started {format(resp.when, "h:mm:ss a")}
+        </h4>
       );
     }
     return "";
@@ -54,7 +56,9 @@ export default function Home() {
     const resp = data.find((v) => v.state === "Pressure running");
     if (resp) {
       return (
-        <h4>Pressure pump is on... started {format(resp.when, "h:mm:ss a")}</h4>
+        <h4 style={{ backgroundColor: "rgba(173, 175, 204)" }}>
+          Pressure pump is on... started {format(resp.when, "h:mm:ss a")}
+        </h4>
       );
     }
     return "";
@@ -193,10 +197,7 @@ export default function Home() {
       console.log("frags", frags);
       const sinceLastPump =
         i < arr.length - 1
-          ? differenceInHours(
-              v[0].when,
-              arr[i + 1][arr[i + 1].length - 1].when
-            )
+          ? differenceInHours(v[0].when, arr[i + 1][arr[i + 1].length - 1].when)
           : 0;
       return { time, frags, sinceLastPump, when: v[0].when };
     });
