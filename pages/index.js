@@ -104,6 +104,12 @@ export default function Home() {
     //setWhere(event.target.value);
   };
 
+  const getDistVal = (date, arr) => {
+    const dists = arr.filter((x) => x.distance);
+    let val = dists.find((d) => d.when.getTime() < date.getTime());
+    return val ? val.distance : 0;
+  };
+
   let useThis;
   let tableHeader3 = "Dist/ Time";
   if (dataToUse === "all") {
@@ -179,6 +185,7 @@ export default function Home() {
     groups.push(group);
     groups.reverse();
     console.log("groups before", groups);
+    //const distData = data.filter((d) => d.dist);
     groups = groups.map((v, i, arr) => {
       let time = v
         .filter((o) => o.what === "Well ran")
@@ -194,12 +201,28 @@ export default function Home() {
           return a + b.dist.split(" ")[0] + "+";
         }, "")
         .slice(0, -1);
-      console.log("frags", frags);
+      const distStr = `${getDistVal(v[0].when, data)}-${getDistVal(
+        v[v.length - 1].when,
+        data
+      )}`;
+      // console.log(
+      //   "frags",
+      //   frags,
+      //   "start time",
+      //   getDistVal(v[0].when, data),
+      //   getDistVal(v[v.length - 1].when, data)
+      // );
       const sinceLastPump =
         i < arr.length - 1
           ? differenceInHours(v[0].when, arr[i + 1][arr[i + 1].length - 1].when)
           : 0;
-      return { time, frags, sinceLastPump, when: v[0].when };
+      return {
+        time,
+        frags,
+        sinceLastPump,
+        when: v[v.length - 1].when,
+        dists: distStr,
+      };
     });
     console.log("groups", groups);
   }
@@ -291,8 +314,9 @@ export default function Home() {
                   <tr>
                     <th>Time</th>
                     <th>Fragments</th>
+                    <th>start-end</th>
                     <th>Hours since last pump</th>
-                    <th>When</th>
+                    <th>When ended</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -301,8 +325,9 @@ export default function Home() {
                       <tr key={i} style={getBGColor(r)}>
                         <td key={1}>{r.time}</td>
                         <td key={2}>{r.frags}</td>
-                        <td key={3}>{r.sinceLastPump}</td>
-                        <td key={4}>{doFormat(r.when)}</td>
+                        <td key={3}>{r.dists}</td>
+                        <td key={4}>{r.sinceLastPump}</td>
+                        <td key={5}>{doFormat(r.when)}</td>
                       </tr>
                     );
                   })}
