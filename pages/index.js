@@ -231,6 +231,7 @@ export default function Home() {
       <Head>
         <title>Water Report</title>
         <link rel="icon" href="/favicon.ico" />
+        <meta name="apple-mobile-web-app-capable" content="yes"></meta>
       </Head>
       <Header />
       {data && data.length > 0 ? (
