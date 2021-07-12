@@ -40,7 +40,7 @@ const History = () => {
     console.log(`We have ${hist.fillSessions.length} pieces of history`);
     return (
       <>
-        <h3 className="text-center">Pumping Stats HIstory</h3>
+        <h3 className="text-center">Pumping Stats History</h3>
         <Table striped bordered hover size="sm">
           <thead>
             <tr>
