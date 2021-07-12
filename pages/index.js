@@ -19,6 +19,7 @@ import { format, differenceInMinutes, differenceInHours } from "date-fns";
 import { useState } from "react";
 import Link from "next/link";
 import isWithinInterval from "date-fns/isWithinInterval/index";
+import History from "../components/history";
 
 function doFormat(theDate) {
   return format(theDate, "MMM d, h:mm:ss a");
@@ -336,17 +337,20 @@ export default function Home() {
               </Table>
             </>
           ) : null}
-
-          <Table striped bordered hover size="sm">
-            <thead>
-              <tr>
-                <th>What</th>
-                <th>When</th>
-                <th>{tableHeader3}</th>
-              </tr>
-            </thead>
-            <tbody>{rows}</tbody>
-          </Table>
+          {dataToUse === "well" ? (
+            <History />
+          ) : (
+            <Table striped bordered hover size="sm">
+              <thead>
+                <tr>
+                  <th>What</th>
+                  <th>When</th>
+                  <th>{tableHeader3}</th>
+                </tr>
+              </thead>
+              <tbody>{rows}</tbody>
+            </Table>
+          )}
         </Container>
       ) : (
         <div> NO Data </div>
