@@ -5,12 +5,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
+      "type": "pwa-node",
       "request": "attach",
-      "name": "Next: Node",
+      "name": "Backend",
       "skipFiles": ["<node_internals>/**"],
-      "port": 9229,
-      "cwd": "${workspaceFolder}"
+      "port": 9229
     },
     {
       "type": "chrome",
@@ -18,9 +17,13 @@
       "name": "Next: Chrome",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}"
-      // "sourceMapPathOverrides": {
-      //     "webpack://_N_E/*": "${webRoot}/*"
-      // }
+    },
+    {
+      "type": "pwa-msedge",
+      "request": "launch",
+      "name": "Launch Microsoft Edge and open the Edge DevTools",
+      "url": "http://localhost:3000",
+      "webRoot": "${workspaceFolder}"
     }
   ]
 }

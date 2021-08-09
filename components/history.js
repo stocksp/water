@@ -21,6 +21,16 @@ const useStateWithLocalStorage = (localStorageKey) => {
   return [value, setValue];
 };
 
+const elideIt = (str) => {
+  const frags = str.split("+");
+  let retVal = "";
+  for (let x = 0; x < 4; x++) {
+    retVal += frags[x] + '+';
+  }
+  retVal += `(${frags.length - 4} more)` +"..." + frags[frags.length - 1];
+  return retVal;
+};
+
 const History = () => {
   const [wellHistory, setWellHistory] = useStateWithLocalStorage("wellHistory");
   const hist = wellHistory ? JSON.parse(wellHistory) : "";
@@ -33,6 +43,8 @@ const History = () => {
     setWellHistory(JSON.stringify(data));
     //console.log(JSON.parse(wellHistory));
   } else if (hist) {
+    // TODO we need to update (setWellHistory) if
+    // history is more than a week behind data
     console.log(hist);
   }
   if (hist) {
@@ -53,6 +65,9 @@ const History = () => {
           </thead>
           <tbody>
             {hist.fillSessions.map((r, i) => {
+              if (r.frags.length > 30) {
+                r.frags = elideIt(r.frags);
+              }
               return (
                 <tr key={i}>
                   <td key={1}>{r.time}</td>
