@@ -3,25 +3,25 @@ import { MongoClient } from "mongodb";
 const setupMongo = async () => {
   // If the database connection is cached,
   // use it instead of creating a new connection
-  // if (process.env.NODE_ENV === "development") {
-  //   if (global.cachedDb) {
-  //     console.log("Cached mongo connection reused");
-  //     return global.cachedDb;
-  //   }
+  if (process.env.NODE_ENV === "development") {
+    if (global.cachedDb) {
+      console.log("Cached mongo connection reused");
+      return global.cachedDb;
+    }
 
-  //   // If no connection is cached, create a new one
-  //   const client = await MongoClient.connect(
-  //     process.env.MONGO_URI_LOCAL,
-  //     {
-  //       useNewUrlParser: true,
-  //       useUnifiedTopology: true,
-  //     }
-  //   );
-  //   const db = await client.db("matchClub");
-  //   global.cachedDb = db;
-  //   console.log("New Mongo connection established");
-  //   return global.cachedDb;
-  // }
+    // If no connection is cached, create a new one
+    const client = await MongoClient.connect(
+      process.env.MONGO_URI_LOCAL,
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+    const db = await client.db();
+    global.cachedDb = db;
+    console.log("New Mongo connection established");
+    return global.cachedDb;
+  }
 
   //console.log("Shouldn't be here in dev!!!");
   if (global.cachedDb) {
