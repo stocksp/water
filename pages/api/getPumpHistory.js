@@ -1,5 +1,10 @@
 import { de } from "date-fns/locale";
-import { format, differenceInMinutes, differenceInHours } from "date-fns";
+import {
+  format,
+  differenceInMinutes,
+  differenceInHours,
+  isAfter,
+} from "date-fns";
 import { withMongo } from "libs/mongo";
 
 const getDistVal = (date, arr) => {
@@ -27,7 +32,7 @@ const handler = async (req, res) => {
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
-    
+
     let foundFirstPressure = false;
     let foundFirstWell = false;
     let power = powerDocs.reduce((acc, cur, index, array) => {
@@ -77,9 +82,10 @@ const handler = async (req, res) => {
         if (v.what == "Well starting") group.push(v);
       } else {
         if (v.what === "Well starting") {
+          const pumpSpan = isAfter(v.when, new Date(2021, 7, 18)) ? 210 : 30;
           const previous = group[group.length - 1];
           const diff = differenceInMinutes(v.when, previous.when);
-          if (diff < 30 + parseFloat(previous.runTime)) {
+          if (diff < pumpSpan + parseFloat(previous.runTime)) {
             group.push(v);
           } else {
             groups.push(group);

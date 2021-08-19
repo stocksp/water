@@ -14,7 +14,12 @@ import {
   Label,
   CustomInput,
 } from "reactstrap";
-import { format, differenceInMinutes, differenceInHours } from "date-fns";
+import {
+  format,
+  differenceInMinutes,
+  differenceInHours,
+  isAfter,
+} from "date-fns";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -166,9 +171,11 @@ export default function Home() {
         if (v.what === "Well starting") group.push(v);
       } else {
         if (v.what === "Well starting") {
+          const pumpSpan = isAfter(v.when, new Date(2021, 7, 18)) ? 210 : 30;
+          console.log("span", pumpSpan);
           const previous = group[group.length - 1];
           const diff = differenceInMinutes(v.when, previous.when);
-          if (diff < 30 + parseFloat(previous.dist)) {
+          if (diff < pumpSpan + parseFloat(previous.dist)) {
             group.push(v);
           } else {
             groups.push(group);
