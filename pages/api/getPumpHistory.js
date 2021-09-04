@@ -19,7 +19,7 @@ const handler = async (req, res) => {
     console.log("starting getPumpHistory");
     const distDocs = await req.db
       .collection("waterDistance")
-      .find({ when: { $gt: new Date("May 29, 2021") } })
+      .find({ when: { $gt: new Date("Aug 16, 2021") } })
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
