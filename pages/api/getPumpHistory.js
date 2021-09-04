@@ -26,7 +26,7 @@ const handler = async (req, res) => {
     let powerDocs = await req.db
       .collection("power")
       .find({
-        when: { $gt: new Date("May 29, 2021") },
+        when: { $gt: new Date("Aug 16, 2021") },
         pump: "well",
       })
       .project({ _id: 0 })
