@@ -3,13 +3,14 @@ import fetch from "unfetch";
 import useSWR from "swr";
 import { Table } from "reactstrap";
 import { format } from "date-fns";
+import { useLocalStorage, useLongPress } from "react-use";
 
 const fetcher = (url) => fetch(url).then((r) => r.json());
 function doFormat(theDate) {
   return format(new Date(theDate), "MMM d, h:mm:ss a");
 }
 
-const useStateWithLocalStorage = (localStorageKey) => {
+/* const useStateWithLocalStorage = (localStorageKey) => {
   const [value, setValue] = useState(
     localStorage.getItem(localStorageKey) || ""
   );
@@ -19,40 +20,47 @@ const useStateWithLocalStorage = (localStorageKey) => {
   }, [value]);
 
   return [value, setValue];
-};
+}; */
 
 const elideIt = (str) => {
   const frags = str.split("+");
   let retVal = "";
   for (let x = 0; x < 4; x++) {
-    retVal += frags[x] + '+';
+    retVal += frags[x] + "+";
   }
-  retVal += `(${frags.length - 4} more)` +"..." + frags[frags.length - 1];
+  retVal += `(${frags.length - 4} more)` + "..." + frags[frags.length - 1];
   return retVal;
 };
 
 const History = () => {
-  const [wellHistory, setWellHistory] = useStateWithLocalStorage("wellHistory");
-  const hist = wellHistory ? JSON.parse(wellHistory) : "";
+  const [wellHistory, setWellHistory, remove] = useLocalStorage("wellHistory");
+  const onLongPress = () => {
+    console.log("calls callback after long pressing 2000ms");
+    remove();
+  };
+  const longPressEvent = useLongPress(onLongPress, { delay: 2000 });
+  //const hist = wellHistory ? JSON.parse(wellHistory) : "";
   // conditionally fetch
-  const { data } = useSWR(!hist ? "/api/getPumpHistory" : null, fetcher);
-  if (!data && !hist) {
+  const { data } = useSWR(!wellHistory ? "/api/getPumpHistory" : null, fetcher);
+  if (!data && !wellHistory) {
     console.log("No history should be fetching");
-  } else if (data && !hist) {
+  } else if (data && !wellHistory) {
     console.log("setting local storage we have data");
-    setWellHistory(JSON.stringify(data));
+    setWellHistory(data);
     //console.log(JSON.parse(wellHistory));
-  } else if (hist) {
+  } else if (wellHistory) {
     // TODO we need to update (setWellHistory) if
     // history is more than a week behind data
-    console.log(hist);
+    console.log(wellHistory);
   }
-  if (hist) {
+  if (wellHistory) {
     //const theData = JSON.parse(wellHistory);
-    console.log(`We have ${hist.fillSessions.length} pieces of history`);
+    console.log(`We have ${wellHistory.fillSessions.length} pieces of history`);
     return (
       <>
-        <h3 className="text-center">Pumping Stats History</h3>
+        <h3 {...longPressEvent} className="text-center">
+          Pumping Stats History
+        </h3>
         <Table striped bordered hover size="sm">
           <thead>
             <tr>
@@ -64,7 +72,7 @@ const History = () => {
             </tr>
           </thead>
           <tbody>
-            {hist.fillSessions.map((r, i) => {
+            {wellHistory.fillSessions.map((r, i) => {
               if (r.frags.length > 30) {
                 r.frags = elideIt(r.frags);
               }
