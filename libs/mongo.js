@@ -3,7 +3,6 @@ import { MongoClient } from "mongodb";
 const setupMongo = async () => {
   // If the database connection is cached,
   // use it instead of creating a new connection
-  console.log("setupMongo", process.env.MONGO_URI_PROD, process.env.MONGO_URI_PROD);
   if (process.env.NODE_ENV === "development") {
     if (global.cachedDb) {
       console.log("Cached mongo connection reused");
