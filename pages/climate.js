@@ -76,9 +76,9 @@ function Climate() {
       <Row>
         <Col md={{ span: 10, offset: 3 }}>{hiLowtemp()}</Col>
       </Row>
-      <Button variant="link" onClick={()=>router.push("/")}>
-              Back to Well
-            </Button>
+      <Button variant="link" onClick={() => router.push("/")}>
+        Back to Well
+      </Button>
       <Table striped bordered hover size="sm">
         <thead>
           <tr>
@@ -103,7 +103,20 @@ function Climate() {
       </Table>
     </Container>
   ) : (
-    <div> NO Data </div>
+    <Container>
+      <h1 className="text-center">
+        <span className="tinyIcon">🌡</span>
+        <span className="mediumIcon">🌡</span>
+        🌡Climate Report🌡
+        <span className="mediumIcon">🌡</span>
+        <span className="tinyIcon">🌡</span>
+      </h1>
+      <h3 className="text-center">Data only available on local Ubuntu!</h3>
+
+      <Button variant="link" onClick={() => router.push("/")}>
+        Back to Well
+      </Button>
+    </Container>
   );
 }
 
