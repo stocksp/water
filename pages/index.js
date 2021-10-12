@@ -2,6 +2,7 @@ import Head from "next/head";
 import Header from "components/header";
 import useSWR from "swr";
 import fetcher from "libs/fetcher";
+import { useRouter } from "next/router";
 import {
   Table,
   Container,
@@ -34,6 +35,7 @@ function makeTime(seconds) {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [dataToUse, setDataToUse] = useState("all");
   // for well report
   let groups = [];
@@ -129,9 +131,10 @@ export default function Home() {
     useThis = data.filter((d) => d.pump === "pressure");
     tableHeader3 = "Time";
   }
-  if (dataToUse === "voltage") {
-    useThis = data.filter((d) => (d.voltage ? true : false));
-    tableHeader3 = "Voltage";
+
+  if (dataToUse === "climate") {
+    router.push("/climate");
+    return null;
   }
   // table data rows
   let rows = [];
@@ -286,11 +289,21 @@ export default function Home() {
                   onChange={onRadio}
                   checked={dataToUse === "voltage"}
                 />
+                <CustomInput
+                  type="radio"
+                  id="climate"
+                  name="climate"
+                  label="Climate"
+                  inline
+                  onChange={onRadio}
+                  checked={dataToUse === "climate"}
+                />
               </div>
             </FormGroup>
             <Link href="/charts">
               <a>Chart</a>
             </Link>
+            
           </Form>
 
           <Row>
