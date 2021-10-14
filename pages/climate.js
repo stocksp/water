@@ -29,17 +29,21 @@ function Climate() {
     refreshInterval: 10000,
   });
   if (data) {
-    console.log("we have data: docs", data.length, data[0]);
+    console.log("we have data: docs", data.length, data[0]), data;
   } else {
     console.log("no data");
   }
-  function hiLowHumidity() {
-    const max = data.reduce((prev, current) =>
-      prev > current.humidity ? prev : current.humidity
-    );
-    const min = data.reduce((prev, current) =>
-      prev < current.humidity ? prev : current.humidity
-    );
+  function hiLowHumidity(where) {
+    const max = data
+      .filter((d) => d.name === where)
+      .reduce((prev, current) =>
+        prev.humidity > current.humidity ? prev : current
+      ).humidity;
+    const min = data
+      .filter((d) => d.name === where)
+      .reduce((prev, current) =>
+        prev.humidity < current.humidity ? prev : current
+      ).humidity;
 
     return (
       <h5>
@@ -47,13 +51,17 @@ function Climate() {
       </h5>
     );
   }
-  function hiLowtemp() {
-    const max = data.reduce((prev, current) =>
-      prev > current.temperature ? prev : current.temperature
-    );
-    const min = data.reduce((prev, current) =>
-      prev < current.temperature ? prev : current.temperature
-    );
+  function hiLowtemp(where) {
+    const max = data
+      .filter((d) => d.name === where)
+      .reduce((prev, current) =>
+        prev.temperature > current.temperature ? prev : current
+      ).temperature;
+    const min = data
+      .filter((d) => d.name === where)
+      .reduce((prev, current) =>
+        prev.temperature < current.temperature ? prev : current
+      ).temperature;
 
     return (
       <h5>
@@ -71,10 +79,10 @@ function Climate() {
         <span className="tinyIcon">🌡</span>
       </h1>
       <Row>
-        <Col md={{ span: 10, offset: 3 }}>{hiLowHumidity()}</Col>
+        <Col md={{ span: 10, offset: 3 }}>{hiLowHumidity("Crawl Space")}</Col>
       </Row>
       <Row>
-        <Col md={{ span: 10, offset: 3 }}>{hiLowtemp()}</Col>
+        <Col md={{ span: 10, offset: 3 }}>{hiLowtemp("Crawl Space")}</Col>
       </Row>
       <Button variant="link" onClick={() => router.push("/")}>
         Back to Well
