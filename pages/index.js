@@ -136,6 +136,9 @@ export default function Home() {
     router.push("/climate");
     return null;
   }
+  if (dataToUse === "voltage") {
+    useThis = data.filter((d) => (d.voltage ? true : false));
+  }
   // table data rows
   let rows = [];
   let wellRunTimeData = [];
@@ -303,7 +306,6 @@ export default function Home() {
             <Link href="/charts">
               <a>Chart</a>
             </Link>
-            
           </Form>
 
           <Row>
