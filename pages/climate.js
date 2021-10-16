@@ -1,8 +1,19 @@
-import { Container, Table, Row, Col, Button } from "reactstrap";
+import {
+  Container,
+  Table,
+  Row,
+  Col,
+  Button,
+  Form,
+  FormGroup,
+  Label,
+  CustomInput,
+} from "reactstrap";
 import useSWR from "swr";
 import fetch from "unfetch";
-import { format, parseJSON } from "date-fns";
+import { format, parseJSON, compareAsc } from "date-fns";
 import { useRouter } from "next/router";
+import { useState } from "react";
 const fetcher = (url) =>
   fetch(url).then((r) =>
     r
@@ -24,6 +35,7 @@ function doFormat(theDate) {
 }
 
 function Climate() {
+  const [dataToUse, setDataToUse] = useState("all");
   const router = useRouter();
   const { data } = useSWR("/api/getClimate", fetcher, {
     refreshInterval: 10000,
@@ -33,13 +45,13 @@ function Climate() {
   } else {
     console.log("no data");
   }
-  function hiLowHumidity(where) {
-    const max = data
+  function hiLowHumidity(where, theData) {
+    const max = theData
       .filter((d) => d.name === where)
       .reduce((prev, current) =>
         prev.humidity > current.humidity ? prev : current
       ).humidity;
-    const min = data
+    const min = theData
       .filter((d) => d.name === where)
       .reduce((prev, current) =>
         prev.humidity < current.humidity ? prev : current
@@ -47,17 +59,17 @@ function Climate() {
 
     return (
       <h5>
-        Humidty high - {max} low - {min}
+        {where === "home" ? "Home" : where} Humidty high - {max} low - {min}
       </h5>
     );
   }
-  function hiLowtemp(where) {
-    const max = data
+  function hiLowtemp(where, theData) {
+    const max = theData
       .filter((d) => d.name === where)
       .reduce((prev, current) =>
         prev.temperature > current.temperature ? prev : current
       ).temperature;
-    const min = data
+    const min = theData
       .filter((d) => d.name === where)
       .reduce((prev, current) =>
         prev.temperature < current.temperature ? prev : current
@@ -65,12 +77,42 @@ function Climate() {
 
     return (
       <h5>
-        Temperature high - {max} low - {min}
+        {where === "home" ? "Home" : where} Temperature high - {max} low - {min}
       </h5>
     );
   }
+  const onRadio = (event) => {
+    console.log("what to show", event.target.value);
+    setDataToUse(event.target.id);
+    //setWhere(event.target.value);
+  };
+  let useThis = data;
+
+  if (dataToUse === "24") {
+    const back = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000);
+    // is the db when after 24 hours ago
+    useThis = data.filter((d) => compareAsc(d.when, back) === 1);
+  }
+  if (dataToUse === "3") {
+    const back = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+    useThis = data.filter((d) => compareAsc(d.when, back) === 1);
+  }
+  // table data rows
+  let rows = [];
+
+  if (data && data.length > 0)
+    useThis.map((r, i) => {
+      rows.push(
+        <tr key={i}>
+          <td key={1}>{r.name}</td>
+          <td key={2}>{r.temperature}</td>
+          <td key={3}>{r.humidity}</td>
+          <td key={5}>{doFormat(r.when)}</td>
+        </tr>
+      );
+    });
   return data && data.length > 0 ? (
-    <Container>
+    <div>
       <h1 className="text-center">
         <span className="tinyIcon">🌡</span>
         <span className="mediumIcon">🌡</span>
@@ -78,38 +120,71 @@ function Climate() {
         <span className="mediumIcon">🌡</span>
         <span className="tinyIcon">🌡</span>
       </h1>
-      <Row>
-        <Col md={{ span: 10, offset: 3 }}>{hiLowHumidity("Crawl Space")}</Col>
-      </Row>
-      <Row>
-        <Col md={{ span: 10, offset: 3 }}>{hiLowtemp("Crawl Space")}</Col>
-      </Row>
-      <Button variant="link" onClick={() => router.push("/")}>
-        Back to Well
-      </Button>
-      <Table striped bordered hover size="sm">
-        <thead>
-          <tr>
-            <th>Where</th>
-            <th>Temperature</th>
-            <th>Humidity</th>
-            <th>When</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((r, i) => {
-            return (
-              <tr key={i}>
-                <td key={1}>{r.name}</td>
-                <td key={2}>{r.temperature}</td>
-                <td key={3}>{r.humidity}</td>
-                <td key={5}>{doFormat(r.when)}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
-    </Container>
+      <Container>
+        <Form inline>
+          <FormGroup check inline>
+            <Label size="lg" for="radios">
+              What to show!
+            </Label>
+            <div>
+              <CustomInput
+                type="radio"
+                id="all"
+                name="all"
+                label="All"
+                inline
+                onChange={onRadio}
+                checked={dataToUse === "all"}
+              />
+              <CustomInput
+                type="radio"
+                id="24"
+                name="24"
+                label="Last 24 hours"
+                inline
+                onChange={onRadio}
+                checked={dataToUse === "24"}
+              />
+              <CustomInput
+                type="radio"
+                id="3"
+                name="3"
+                label="Last 3 days"
+                inline
+                onChange={onRadio}
+                checked={dataToUse === "3"}
+              />
+            </div>
+          </FormGroup>
+        </Form>
+        <Row>
+          <Col md={{ span: 10, offset: 3 }}>{hiLowHumidity("Crawl Space", useThis)}</Col>
+        </Row>
+        <Row>
+          <Col md={{ span: 10, offset: 3 }}>{hiLowtemp("Crawl Space", useThis)}</Col>
+        </Row>
+        <Row>
+          <Col md={{ span: 10, offset: 3 }}>{hiLowHumidity("home", useThis)}</Col>
+        </Row>
+        <Row>
+          <Col md={{ span: 10, offset: 3 }}>{hiLowtemp("home", useThis)}</Col>
+        </Row>
+        <Button variant="link" onClick={() => router.push("/")}>
+          Back to Well
+        </Button>
+        <Table striped bordered hover size="sm">
+          <thead>
+            <tr>
+              <th>Where</th>
+              <th>Temperature</th>
+              <th>Humidity</th>
+              <th>When</th>
+            </tr>
+          </thead>
+          <tbody>{rows}</tbody>
+        </Table>
+      </Container>
+    </div>
   ) : (
     <Container>
       <h1 className="text-center">
