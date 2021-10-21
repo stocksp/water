@@ -36,6 +36,7 @@ function doFormat(theDate) {
 
 function Climate() {
   const [dataToUse, setDataToUse] = useState("all");
+  const [where, setWhere] = useState("both");
   const router = useRouter();
   const { data } = useSWR("/api/getClimate", fetcher, {
     refreshInterval: 10000,
@@ -48,13 +49,15 @@ function Climate() {
   function hiLowHumidity(where, theData) {
     const max = theData
       .filter((d) => d.name === where)
-      .reduce((prev, current) =>
-        prev.humidity > current.humidity ? prev : current
+      .reduce(
+        (prev, current) => (prev.humidity > current.humidity ? prev : current),
+        { humidity: 0 }
       ).humidity;
     const min = theData
       .filter((d) => d.name === where)
-      .reduce((prev, current) =>
-        prev.humidity < current.humidity ? prev : current
+      .reduce(
+        (prev, current) => (prev.humidity < current.humidity ? prev : current),
+        { humidity: 0 }
       ).humidity;
 
     return (
@@ -66,13 +69,17 @@ function Climate() {
   function hiLowtemp(where, theData) {
     const max = theData
       .filter((d) => d.name === where)
-      .reduce((prev, current) =>
-        prev.temperature > current.temperature ? prev : current
+      .reduce(
+        (prev, current) =>
+          prev.temperature > current.temperature ? prev : current,
+        { temperature: 0 }
       ).temperature;
     const min = theData
       .filter((d) => d.name === where)
-      .reduce((prev, current) =>
-        prev.temperature < current.temperature ? prev : current
+      .reduce(
+        (prev, current) =>
+          prev.temperature < current.temperature ? prev : current,
+        { temperature: 0 }
       ).temperature;
 
     return (
@@ -85,6 +92,29 @@ function Climate() {
     console.log("what to show", event.target.value);
     setDataToUse(event.target.id);
     //setWhere(event.target.value);
+  };
+  const onCheck = (event) => {
+    console.log("what", event.target.id, event.target.checked);
+    if (event.target.checked)
+      switch (event.target.id) {
+        case "crawl":
+          where === "home" ? setWhere("both") : setWhere("crawl");
+          break;
+        case "home":
+          where === "crawl" ? setWhere("both") : setWhere("home");
+          break;
+      }
+    else
+      switch (event.target.id) {
+        case "crawl":
+          where === "crawl" && setWhere("both");
+          where === "both" && setWhere("home");
+          break;
+        case "home":
+          where === "home" && setWhere("both");
+          where === "both" && setWhere("crawl");
+          break;
+      }
   };
   let useThis = data;
 
@@ -100,7 +130,9 @@ function Climate() {
   // table data rows
   let rows = [];
 
-  if (data && data.length > 0)
+  if (data && data.length > 0) {
+    if (where === "home") useThis = useThis.filter((x) => x.name === "home");
+    if (where === "crawl") useThis = useThis.filter((x) => x.name === "Crawl Space");
     useThis.map((r, i) => {
       rows.push(
         <tr key={i}>
@@ -111,6 +143,7 @@ function Climate() {
         </tr>
       );
     });
+  }
   return data && data.length > 0 ? (
     <div>
       <h1 className="text-center">
@@ -154,17 +187,41 @@ function Climate() {
                 onChange={onRadio}
                 checked={dataToUse === "3"}
               />
+              <CustomInput
+                type="checkbox"
+                id="crawl"
+                name="crawl"
+                label="Crawl"
+                inline
+                onChange={onCheck}
+                checked={where === "crawl" || where === "both"}
+              />
+              <CustomInput
+                type="checkbox"
+                id="home"
+                name="home"
+                label="Home"
+                inline
+                onChange={onCheck}
+                checked={where === "home" || where === "both"}
+              />
             </div>
           </FormGroup>
         </Form>
         <Row>
-          <Col md={{ span: 10, offset: 3 }}>{hiLowHumidity("Crawl Space", useThis)}</Col>
+          <Col md={{ span: 10, offset: 3 }}>
+            {hiLowHumidity("Crawl Space", useThis)}
+          </Col>
         </Row>
         <Row>
-          <Col md={{ span: 10, offset: 3 }}>{hiLowtemp("Crawl Space", useThis)}</Col>
+          <Col md={{ span: 10, offset: 3 }}>
+            {hiLowtemp("Crawl Space", useThis)}
+          </Col>
         </Row>
         <Row>
-          <Col md={{ span: 10, offset: 3 }}>{hiLowHumidity("home", useThis)}</Col>
+          <Col md={{ span: 10, offset: 3 }}>
+            {hiLowHumidity("home", useThis)}
+          </Col>
         </Row>
         <Row>
           <Col md={{ span: 10, offset: 3 }}>{hiLowtemp("home", useThis)}</Col>
