@@ -57,7 +57,7 @@ function Climate() {
       .filter((d) => d.name === where)
       .reduce(
         (prev, current) => (prev.humidity < current.humidity ? prev : current),
-        { humidity: 0 }
+        { humidity: 100 }
       ).humidity;
 
     return (
@@ -79,7 +79,7 @@ function Climate() {
       .reduce(
         (prev, current) =>
           prev.temperature < current.temperature ? prev : current,
-        { temperature: 0 }
+        { temperature: 200 }
       ).temperature;
 
     return (
