@@ -2,16 +2,22 @@ import { withMongo } from "libs/mongo";
 import { isValid } from "date-fns";
 
 const handler = async (req, res) => {
-  console.log("addDist", req.body.distance);
+  console.log("addPower", req.body.pump, req.body.state);
   try {
     const when = new Date(req.body.when);
-    const distance = parseFloat(req.body.distance);
+    const state = req.body.state; 
+    const pump = req.body.pump;
+    const runTime = parseInt(req.body.runTime);
 
-    if (!isNaN(distance) && isValid(when)) {
-      const data = {
+    if (isValid(when)) {
+      let data = {
         when,
-        distance,
+        state,
+        pump
       };
+      if(runTime) {
+          data.runTime = runTime;
+      }
 
       let resp = await req.db.collection("testing").insertOne(data);
       console.log("resp");

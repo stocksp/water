@@ -40,7 +40,7 @@ export default function Home() {
   // for well report
   let groups = [];
 
-  const { data } = useSWR("/api/getData", fetcher, { refreshInterval: 10000 });
+  const { data } = useSWR("/api/getData", fetcher, { refreshInterval: 100000 });
   if (data) {
     console.log("we have data: docs", data.length, data[0]);
   } else {
@@ -219,13 +219,13 @@ export default function Home() {
         v[v.length - 1].when,
         data
       )}`;
-      // console.log(
-      //   "frags",
-      //   frags,
-      //   "start time",
-      //   getDistVal(v[0].when, data),
-      //   getDistVal(v[v.length - 1].when, data)
-      // );
+      console.log(
+        "frags",
+        frags,
+        "start time",
+        getDistVal(v[0].when, data),
+        getDistVal(v[v.length - 1].when, data)
+      );
       const sinceLastPump =
         i < arr.length - 1
           ? differenceInHours(v[0].when, arr[i + 1][arr[i + 1].length - 1].when)

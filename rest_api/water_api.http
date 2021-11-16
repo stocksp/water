@@ -1,0 +1,23 @@
+@baseUrl = http://ubuntu:3000/api
+
+###
+
+GET {{baseUrl}}/hello
+###
+POST {{baseUrl}}/addDist  HTTP/1.1
+content-type: application/json
+
+{
+    "dist": 22.777,
+    "date": "Fri, Aug 25 2021 18:00:50 GMT"
+}
+###
+POST {{baseUrl}}/addPower  HTTP/1.1
+content-type: application/json
+
+{
+    "state": "on",
+    "when": "Fri, Aug 2' 2021 18:00:50 GMT",
+    "pump": "pressure",
+    "runTime": 135
+}
