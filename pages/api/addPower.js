@@ -19,7 +19,7 @@ const handler = async (req, res) => {
           data.runTime = runTime;
       }
 
-      let resp = await req.db.collection("testing").insertOne(data);
+      let resp = await req.db.collection("power").insertOne(data);
       console.log("resp");
       res.statusCode = 200;
       res.json({

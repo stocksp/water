@@ -13,7 +13,7 @@ const handler = async (req, res) => {
         distance,
       };
 
-      let resp = await req.db.collection("testing").insertOne(data);
+      let resp = await req.db.collection("waterDistance").insertOne(data);
       console.log("resp");
       res.statusCode = 200;
       res.json({

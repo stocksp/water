@@ -13,7 +13,7 @@ const handler = async (req, res) => {
         voltage
       };
       
-      let resp = await req.db.collection("testing").insertOne(data);
+      let resp = await req.db.collection("voltage").insertOne(data);
       console.log("resp");
       res.statusCode = 200;
       res.json({
