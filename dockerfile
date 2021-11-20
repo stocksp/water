@@ -16,6 +16,8 @@ RUN npm run build && npm install
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
 # RUN apk add --no-cache libc6-compat
+RUN apk update && \
+    apk add --no-cache tzdata
 WORKDIR /app
 
 ENV NODE_ENV production
