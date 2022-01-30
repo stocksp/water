@@ -8,7 +8,7 @@ const handler = async (req, res) => {
       .collection("climate")
       .find({
         when: { $gt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-        $or: [{ name: "Crawl Space" }, { name: "home" }] ,
+        $or: [{ name: "Crawl Space" }, { name: "home" }, { name: "outside" }] ,
       })
       .project({ _id: 0 })
       .sort({ _id: -1 })
