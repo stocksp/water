@@ -11,7 +11,7 @@ const fetcher = (url) =>
         d.when = parseJSON(d.when);
         return d;
       });
-      // combine on off ignore on if there is an off
+      // update text and remove pressure 'on' after first onb
       let foundFirstPressure = false;
       let foundFirstWell = false;
       power = power.reduce((acc, cur, index, array) => {
@@ -47,7 +47,7 @@ const fetcher = (url) =>
           cur.state = "Pressure ran";
           foundFirstPressure = true;
           acc.push(cur);
-        }
+        } 
         return acc;
       }, []);
       const dist = d.distDocs.map((d, i, arr) => {

@@ -167,6 +167,7 @@ export default function Home() {
       );
       if (dataToUse === "well") {
         wellRunTimeData.push({ what, when: r.when, dist });
+        //console.table(wellRunTimeData);
       }
     });
   // produce well report
@@ -177,6 +178,8 @@ export default function Home() {
         if (v.what === "Well starting") group.push(v);
       } else {
         if (v.what === "Well starting") {
+          // we changed the well pump resting time on 7,18,2021
+          // from less than 30 minutes to 190 plus
           const pumpSpan = isAfter(v.when, new Date(2021, 7, 18)) ? 210 : 30;
           console.log("span", pumpSpan);
           const previous = group[group.length - 1];
