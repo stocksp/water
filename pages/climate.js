@@ -251,7 +251,6 @@ function Climate() {
         <span className="mediumIcon">🌡</span>
         <span className="tinyIcon">🌡</span>
       </h1>
-      <h3 className="text-center">Data only available on local Ubuntu!</h3>
 
       <Button variant="link" onClick={() => router.push("/")}>
         Back to Well
