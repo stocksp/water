@@ -10,7 +10,7 @@ import {
   CustomInput,
 } from "reactstrap";
 import useSWR from "swr";
-import fetch from "unfetch";
+
 import { format, parseJSON, compareAsc } from "date-fns";
 import { useRouter } from "next/router";
 import { useState } from "react";

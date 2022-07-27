@@ -1,4 +1,3 @@
-import fetch from "unfetch";
 import { parseJSON, compareDesc } from "date-fns";
 const fetcher = (url) =>
   fetch(url).then((r) =>

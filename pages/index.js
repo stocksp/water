@@ -40,7 +40,7 @@ export default function Home() {
   // for well report
   let groups = [];
 
-  const { data } = useSWR("/api/getData", fetcher, { refreshInterval: 100000 });
+  const { data } = useSWR("/api/getData", fetcher, { refreshInterval: 30000 });
   if (data) {
     console.log("we have data: docs", data.length, data[0]);
   } else {

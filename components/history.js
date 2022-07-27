@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import fetch from "unfetch";
+
 import useSWR from "swr";
 import { Table } from "reactstrap";
 import { format } from "date-fns";
