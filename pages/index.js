@@ -40,7 +40,7 @@ export default function Home() {
   // for well report
   let groups = [];
 
-  const { data } = useSWR("/api/getData", fetcher, { refreshInterval: 30000 });
+  const { data } = useSWR("/api/getData", fetcher, { refreshInterval: 15000 });
   if (data) {
     console.log("we have data: docs", data.length, data[0]);
   } else {
@@ -151,12 +151,12 @@ export default function Home() {
       const dist = r.distance
         ? r.distance
         : r.voltage
-        ? r.voltage
-        : r.runTime
-        ? makeTime(r.runTime)
-        : r.state === "Well running"
-        ? r.state
-        : "-----";
+          ? r.voltage
+          : r.runTime
+            ? makeTime(r.runTime)
+            : r.state === "Well running"
+              ? r.state
+              : "-----";
       //console.log("dist=", dist)
       rows.push(
         <tr key={i} style={getBGColor(r)}>
@@ -306,9 +306,7 @@ export default function Home() {
                 />
               </div>
             </FormGroup>
-            <Link href="/charts">
-              <a>Chart</a>
-            </Link>
+
           </Form>
 
           <Row>
