@@ -19,14 +19,14 @@ const handler = async (req, res) => {
     console.log("starting getPumpHistory new one");
     const distDocs = await req.db
       .collection("waterDistance")
-      .find({ when: { $gt: new Date("Mar 1, 2021") } })
+      .find({ when: { $gt: new Date("Mar 1, 2022") } })
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
     let powerDocs = await req.db
       .collection("power")
       .find({
-        when: { $gt: new Date("Mar 1, 2021") },
+        when: { $gt: new Date("Mar 1, 2022") },
         pump: "well",
       })
       .project({ _id: 0 })
