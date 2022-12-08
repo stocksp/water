@@ -16,7 +16,7 @@ const getDistVal = (date, arr) => {
 const handler = async (req, res) => {
   try {
     // look back from June 30
-    console.log("starting getPumpHistory");
+    console.log("starting getPumpHistory new one");
     const distDocs = await req.db
       .collection("waterDistance")
       .find({ when: { $gt: new Date("Mar 1, 2021") } })
@@ -109,7 +109,7 @@ const handler = async (req, res) => {
           return a + parseFloat(b.runTime);
         }, 0);
       time = Math.round(time * 10) / 10;
-      console.log("time", time);
+      //console.log("time", time);
       // frags = "49.0,9.8,7.4,1.2"
       const frags = v
         .filter((o) => o.what === "Well ran")
