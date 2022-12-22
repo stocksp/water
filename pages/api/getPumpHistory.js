@@ -19,14 +19,14 @@ const handler = async (req, res) => {
     console.log("starting getPumpHistory new one");
     const distDocs = await req.db
       .collection("waterDistance")
-      .find({ when: { $gt: new Date("Mar 1, 2022") } })
+      .find({ when: { $gt: new Date("Aug 1, 2022") } })
       .project({ _id: 0 })
       .sort({ _id: -1 })
       .toArray();
     let powerDocs = await req.db
       .collection("power")
       .find({
-        when: { $gt: new Date("Mar 1, 2022") },
+        when: { $gt: new Date("Aug 1, 2022") },
         pump: "well",
       })
       .project({ _id: 0 })
@@ -82,7 +82,7 @@ const handler = async (req, res) => {
         if (v.what == "Well starting") group.push(v);
       } else {
         if (v.what === "Well starting") {
-          const pumpSpan = isAfter(v.when, new Date(2021, 7, 18)) ? 210 : 30;
+          const pumpSpan = 210;
           const previous = group[group.length - 1];
           const diff = differenceInMinutes(v.when, previous.when);
           if (diff < pumpSpan + parseFloat(previous.runTime)) {
