@@ -8,10 +8,33 @@ const setupMongo = async () => {
       console.log("Cached mongo connection reused");
       return global.cachedDb;
     }
+    //console.log(`dev mode create new connection: ${process.env.MONGO_URI_LOCAL}`)
+    try {
+      // If no connection is cached, create a new one
+      const client = await MongoClient.connect(
+        process.env.MONGO_URI_LOCAL,
+        {
+          useNewUrlParser: true,
+          useUnifiedTopology: true,
+        }
+      );
+      const db = await client.db();
+      global.cachedDb = db;
+      //console.log("New Mongo connection established", process.env.MONGO_URI_LOCAL);
+      return global.cachedDb;
+    } catch (err) {
+      console.log(err.toString())
+    }
+  } else {
 
+    //console.log("Shouldn't be here in dev!!!");
+    if (global.cachedDb) {
+      //console.log("Cached mongo connection reused", process.env.MONGO_URI_PROD);
+      return global.cachedDb;
+    }
     // If no connection is cached, create a new one
     const client = await MongoClient.connect(
-      process.env.MONGO_URI_LOCAL,
+      process.env.MONGO_URI_PROD,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -19,28 +42,9 @@ const setupMongo = async () => {
     );
     const db = await client.db();
     global.cachedDb = db;
-    console.log("New Mongo connection established");
+    console.log("New Mongo connection established", process.env.MONGO_URI_PROD);
     return global.cachedDb;
   }
-
-  //console.log("Shouldn't be here in dev!!!");
-  if (global.cachedDb) {
-    //console.log("Cached mongo connection reused", process.env.MONGO_URI_PROD);
-    return global.cachedDb;
-  }
-  // If no connection is cached, create a new one
-  const client = await MongoClient.connect(
-    process.env.MONGO_URI_PROD,
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  );
-  const db = await client.db();
-  global.cachedDb = db;
-  //console.log("New Mongo connection established", process.env.MONGO_URI_PROD);
-  return global.cachedDb;
-
 };
 
 const connectToMongo = async () => {

@@ -45,16 +45,17 @@ const History = () => {
   if (!data && !wellHistory) {
     console.log("No history should be fetching");
   } else if (data && !wellHistory) {
-    console.log("setting local storage we have data");
+    console.log("setting local storage we have data", data);
     setWellHistory(data);
     //console.log(JSON.parse(wellHistory));
   } else if (wellHistory) {
     // TODO we need to update (setWellHistory) if
     // history is more than a week behind data
-    console.log(wellHistory);
+    console.log(`well history!: ${wellHistory}`);
   }
   if (wellHistory) {
     //const theData = JSON.parse(wellHistory);
+    console.log('well history', wellHistory)
     console.log(`We have ${wellHistory.fillSessions.length} pieces of history`);
     return (
       <>
