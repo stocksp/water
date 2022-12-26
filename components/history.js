@@ -56,7 +56,7 @@ const History = () => {
   if (wellHistory) {
     //const theData = JSON.parse(wellHistory);
     console.log('well history', wellHistory)
-    console.log(`We have ${wellHistory.fillSessions.length} pieces of history`);
+    //console.log(`We have ${wellHistory.fillSessions.length} pieces of history`);
     return (
       <>
         <h3 {...longPressEvent} className="text-center">

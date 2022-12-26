@@ -29,6 +29,7 @@ const getData = async (req, date, lastWhen = 0) => {
     .project({ _id: 0 })
     .sort({ _id: -1 })
     .toArray();
+  if (powerDocs.length === 0) return [];
 
   let foundFirstPressure = false;
   let foundFirstWell = false;
@@ -114,6 +115,7 @@ const getData = async (req, date, lastWhen = 0) => {
         return a + b.runTime.split(" ")[0] + "+";
       }, "")
       .slice(0, -1);
+    console.log(`before distStr v length ${v.length}`)
     const distStr = `${getDistVal(v[0].when, distDocs)}-${getDistVal(
       v[v.length - 1].when,
       distDocs
@@ -161,6 +163,10 @@ const handler = async (req, res) => {
       res.json({ message: "ok", fillSessions: groups });
     } else {
       const newGroups = await getData(req, hist[0].when, hist[0].when);
+      if (newGroups.length === 0) {
+        res.json({ message: "ok", fillSessions: hist });
+        return;
+      }
       //console.log(`group length ${newGroups.length}, ${newGroups[0].sinceLastPump}`)
       let resp = await req.db.collection("wellHistory").insertMany(newGroups);
       res.json({ message: "ok", fillSessions: newGroups.concat(hist) });
