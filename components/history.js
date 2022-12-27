@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import useSWR from "swr";
-import { Table } from "reactstrap";
+import Table from "react-bootstrap/Table"
 import { format } from "date-fns";
 import { useLocalStorage, useLongPress } from "react-use";
 
