@@ -1,14 +1,9 @@
-import {
-  Container,
-  Table,
-  Row,
-  Col,
-  Button,
-  Form,
-  FormGroup,
-  Label,
-  CustomInput,
-} from "reactstrap";
+import Container from "react-bootstrap/Container"
+import Row from "react-bootstrap/Row"
+import Col from "react-bootstrap/Col"
+import Form from "react-bootstrap/Form"
+import Table from "react-bootstrap/Table"
+import Button from "react-bootstrap/Button"
 import useSWR from "swr";
 
 import { format, parseJSON, compareAsc } from "date-fns";
@@ -94,25 +89,25 @@ function Climate() {
     //setWhere(event.target.value);
   };
   const onCheck = (event) => {
-    console.log("what", event.target.id, event.target.checked);
+    console.log("what", event.target.id, event.target.checked, where);
     if (event.target.checked)
       switch (event.target.id) {
         case "crawl":
-          where === "home" ? setWhere("both") : setWhere("crawl");
+          where === "crawl" ? setWhere("both") : setWhere("crawl");
           break;
-        case "home":
-          where === "crawl" ? setWhere("both") : setWhere("home");
+        case "outside":
+          where === "outside" ? setWhere("both") : setWhere("outside");
           break;
       }
     else
       switch (event.target.id) {
         case "crawl":
           where === "crawl" && setWhere("both");
-          where === "both" && setWhere("home");
-          break;
-        case "home":
-          where === "home" && setWhere("both");
           where === "both" && setWhere("crawl");
+          break;
+        case "outside":
+          where === "outside" && setWhere("both");
+          where === "both" && setWhere("outside");
           break;
       }
   };
@@ -154,60 +149,57 @@ function Climate() {
         <span className="tinyIcon">🌡</span>
       </h1>
       <Container>
-        <Form inline>
-          <FormGroup check inline>
-            <Label size="lg" for="radios">
-              What to show!
-            </Label>
-            <div>
-              <CustomInput
-                type="radio"
-                id="all"
-                name="all"
-                label="All"
-                inline
-                onChange={onRadio}
-                checked={dataToUse === "all"}
-              />
-              <CustomInput
-                type="radio"
-                id="24"
-                name="24"
-                label="Last 24 hours"
-                inline
-                onChange={onRadio}
-                checked={dataToUse === "24"}
-              />
-              <CustomInput
-                type="radio"
-                id="3"
-                name="3"
-                label="Last 3 days"
-                inline
-                onChange={onRadio}
-                checked={dataToUse === "3"}
-              />
-              <CustomInput
-                type="checkbox"
-                id="crawl"
-                name="crawl"
-                label="Crawl"
-                inline
-                onChange={onCheck}
-                checked={where === "crawl" || where === "both"}
-              />
-              <CustomInput
-                type="checkbox"
-                id="home"
-                name="home"
-                label="Home"
-                inline
-                onChange={onCheck}
-                checked={where === "home" || where === "both"}
-              />
-            </div>
-          </FormGroup>
+        <Form>
+          <div key="inline-radio" className="mb-3">
+            <Form.Label>What to Show! &nbsp;</Form.Label>
+            <Form.Check
+              inline
+              label="All"
+              name="all"
+              type="radio"
+              id="all"
+              onChange={onRadio}
+              checked={dataToUse === "all"}
+            />
+            <Form.Check
+              inline
+              label="Last 24 hours"
+              name="24"
+              type="radio"
+              id="24"
+              onChange={onRadio}
+              checked={dataToUse === "24"}
+            />
+            <Form.Check
+              inline
+              label="Last 3 days"
+              name="3"
+              type="radio"
+              id="3"
+              onChange={onRadio}
+              checked={dataToUse === "3"}
+            />
+            <Form.Check
+              inline
+              label="Crawl"
+              name="crawl"
+              type="checkbox"
+              id="crawl"
+              onChange={onCheck}
+              checked={where === "crawl" || where === "both"}
+            />
+            <Form.Check
+              inline
+              label="Outside"
+              name="outside"
+              type="checkbox"
+              id="outside"
+              onChange={onCheck}
+              checked={where === "outside" || where === "both"}
+            />
+          </div>
         </Form>
+
         <Row>
           <Col md={{ span: 10, offset: 3 }}>
             {hiLowHumidity("Crawl Space", useThis)}
