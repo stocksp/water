@@ -9,12 +9,12 @@ import useSWR from "swr";
 import { format, parseJSON, compareAsc } from "date-fns";
 import { useRouter } from "next/router";
 import { useState } from "react";
-const fetcher = (url) =>
+const fetcher = (url: any) =>
   fetch(url).then((r) =>
     r
       .json()
       .then((d) => {
-        let climate = d.climateDocs.map((d) => {
+        let climate = d.climateDocs.map((d: any) => {
           d.when = parseJSON(d.when);
           return d;
         });
@@ -25,7 +25,7 @@ const fetcher = (url) =>
         console.error(e); // "oh, no!"
       })
   );
-function doFormat(theDate) {
+function doFormat(theDate: any) {
   return format(theDate, "MMM d, h:mm:ss a");
 }
 
@@ -41,17 +41,17 @@ function Climate() {
   } else {
     console.log("no data");
   }
-  function hiLowHumidity(where, theData) {
+  function hiLowHumidity(where: any, theData: any) {
     const max = theData
-      .filter((d) => d.name === where)
+      .filter((d: any) => d.name === where)
       .reduce(
-        (prev, current) => (prev.humidity > current.humidity ? prev : current),
+        (prev: any, current: any) => (prev.humidity > current.humidity ? prev : current),
         { humidity: 0 }
       ).humidity;
     const min = theData
-      .filter((d) => d.name === where)
+      .filter((d: any) => d.name === where)
       .reduce(
-        (prev, current) => (prev.humidity < current.humidity ? prev : current),
+        (prev: any, current: any) => (prev.humidity < current.humidity ? prev : current),
         { humidity: 100 }
       ).humidity;
 
@@ -61,18 +61,18 @@ function Climate() {
       </h5>
     );
   }
-  function hiLowtemp(where, theData) {
+  function hiLowtemp(where: any, theData: any) {
     const max = theData
-      .filter((d) => d.name === where)
+      .filter((d: any) => d.name === where)
       .reduce(
-        (prev, current) =>
+        (prev: any, current: any) =>
           prev.temperature > current.temperature ? prev : current,
         { temperature: 0 }
       ).temperature;
     const min = theData
-      .filter((d) => d.name === where)
+      .filter((d: any) => d.name === where)
       .reduce(
-        (prev, current) =>
+        (prev: any, current: any) =>
           prev.temperature < current.temperature ? prev : current,
         { temperature: 200 }
       ).temperature;
@@ -83,12 +83,12 @@ function Climate() {
       </h5>
     );
   }
-  const onRadio = (event) => {
+  const onRadio = (event: any) => {
     console.log("what to show", event.target.value);
     setDataToUse(event.target.id);
     //setWhere(event.target.value);
   };
-  const onCheck = (event) => {
+  const onCheck = (event: any) => {
     console.log("what", event.target.id, event.target.checked, where);
     if (event.target.checked)
       switch (event.target.id) {
@@ -116,19 +116,19 @@ function Climate() {
   if (dataToUse === "24") {
     const back = new Date(Date.now() - 1 * 24 * 60 * 60 * 1000);
     // is the db when after 24 hours ago
-    useThis = data.filter((d) => compareAsc(d.when, back) === 1);
+    useThis = data.filter((d: any) => compareAsc(d.when, back) === 1);
   }
   if (dataToUse === "3") {
     const back = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
-    useThis = data.filter((d) => compareAsc(d.when, back) === 1);
+    useThis = data.filter((d: any) => compareAsc(d.when, back) === 1);
   }
   // table data rows
-  let rows = [];
+  let rows: any = [];
 
   if (data && data.length > 0) {
-    if (where === "home") useThis = useThis.filter((x) => x.name === "home");
-    if (where === "crawl") useThis = useThis.filter((x) => x.name === "Crawl Space");
-    useThis.map((r, i) => {
+    if (where === "home") useThis = useThis.filter((x: any) => x.name === "home");
+    if (where === "crawl") useThis = useThis.filter((x: any) => x.name === "Crawl Space");
+    useThis.map((r: any, i: any) => {
       rows.push(
         <tr key={i}>
           <td key={1}>{r.name}</td>
