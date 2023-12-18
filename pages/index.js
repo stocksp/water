@@ -36,6 +36,7 @@ export default function Home() {
     console.log("no data")
   }
   function currentDistance() {
+    if(!data.distance) return 0
     return data.find((v) => v.distance).distance
   }
   function isWellrunning() {
