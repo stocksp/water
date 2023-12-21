@@ -9,7 +9,7 @@ import useSWR from "swr";
 import { format, parseJSON, compareAsc } from "date-fns";
 import { useRouter } from "next/router";
 import { useState } from "react";
-const fetcher = (url: any) =>
+const fetcher = (url: string) =>
   fetch(url).then((r) =>
     r
       .json()
@@ -25,7 +25,7 @@ const fetcher = (url: any) =>
         console.error(e); // "oh, no!"
       })
   );
-function doFormat(theDate: any) {
+function doFormat(theDate: Date) {
   return format(theDate, "MMM d, h:mm:ss a");
 }
 
@@ -41,7 +41,7 @@ function Climate() {
   } else {
     console.log("no data");
   }
-  function hiLowHumidity(where: any, theData: any) {
+  function hiLowHumidity(where: string, theData: any) {
     const max = theData
       .filter((d: any) => d.name === where)
       .reduce(
