@@ -145,7 +145,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const db = client.db()
     // find last history
     const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 120)
     let hist = await db
       .collection("wellHistory")
       .find({date: { $gte: thirtyDaysAgo }})
@@ -154,7 +154,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       .toArray()
     console.log(`history length: ${hist.length}`)
     if (hist.length == 0) {
-      const groups = await getData(db, new Date("Aug 1, 2023"))
+      const groups = await getData(db,thirtyDaysAgo)
       console.log(`groups length: ${groups.length} ${groups[0].when}`)
       let resp = await db.collection("wellHistory").insertMany(groups.reverse())
 
